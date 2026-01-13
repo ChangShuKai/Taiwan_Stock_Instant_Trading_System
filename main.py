@@ -1,7 +1,3 @@
-"""
-投資先生 - 台股即時交易系統
-主程式入口
-"""
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QMessageBox, QGroupBox
 from PySide6.QtCore import QTimer
