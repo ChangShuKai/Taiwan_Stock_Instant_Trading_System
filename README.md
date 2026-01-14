@@ -116,7 +116,7 @@ PySide6/
 
 本專案僅供學習和個人使用。
 
-##版權
+## 版權
 
 - © Chang_Shukai 2026. All rights reserved.
 - © Six Star Culture 2026. All rights reserved.
