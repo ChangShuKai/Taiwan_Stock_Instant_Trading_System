@@ -1,4 +1,5 @@
-# 台股即時交易系統 V 1.0
+# 台股即時交易系統 V 1.3
+# Taiwan Stock Exchange Real-Time Trading System V 1.3
 
 一個使用 PySide6 開發的台灣股票交易模擬應用程式，整合台灣證券交易所（TWSE）的即時股價 API。
 
