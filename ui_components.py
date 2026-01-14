@@ -7,7 +7,9 @@ from PySide6.QtWidgets import (
     QTableWidget, QTableWidgetItem, QLineEdit, QSpinBox,
     QGroupBox, QMessageBox
 )
-from PySide6.QtGui import QFont, QColor
+from PySide6.QtGui import QFont, QColor, QPainter
+from PySide6.QtCore import Qt
+from PySide6.QtCharts import QChartView, QChart, QPieSeries
 from styles import (
     BUY_BUTTON_STYLE, SELL_BUTTON_STYLE, SEARCH_BUTTON_STYLE,
     PRICE_UP_STYLE, PRICE_DOWN_STYLE, PRICE_FLAT_STYLE
@@ -255,8 +257,9 @@ class HoldingsTableWidget(QTableWidget):
         self.setup_ui()
     
     def setup_ui(self):
-        self.setColumnCount(4)
-        self.setHorizontalHeaderLabels(["股票", "股數", "現價", "市值"])
+        # 多一個欄位顯示股票資訊（例如 台股 / 美股、持倉比例等）
+        self.setColumnCount(5)
+        self.setHorizontalHeaderLabels(["股票", "股數", "現價", "市值", "股票資訊"])
         self.horizontalHeader().setStretchLastSection(True)
         self.setMaximumHeight(250)
         self.setAlternatingRowColors(True)
@@ -266,11 +269,12 @@ class HoldingsTableWidget(QTableWidget):
         """更新持倉數據"""
         self.setRowCount(len(holdings_data))
         
-        for row, (stock_name, shares, price, value) in enumerate(holdings_data):
+        for row, (stock_name, shares, price, value, info) in enumerate(holdings_data):
             self.setItem(row, 0, QTableWidgetItem(stock_name))
             self.setItem(row, 1, QTableWidgetItem(str(shares)))
             self.setItem(row, 2, QTableWidgetItem(f"{price:,.2f}"))
             self.setItem(row, 3, QTableWidgetItem(f"{value:,.0f}"))
+            self.setItem(row, 4, QTableWidgetItem(info))
 
 
 class HistoryTableWidget(QTableWidget):
@@ -306,3 +310,46 @@ class HistoryTableWidget(QTableWidget):
             self.setItem(row, 3, QTableWidgetItem(f"{trade['price']:,.2f}"))
             self.setItem(row, 4, QTableWidgetItem(str(trade['qty'])))
             self.setItem(row, 5, QTableWidgetItem(f"{trade['amount']:,.0f}"))
+
+
+class HoldingsPieChartWidget(QWidget):
+    """持倉比例圓餅圖（僅顯示台股持倉比例）"""
+
+    def __init__(self):
+        super().__init__()
+        self.setup_ui()
+
+    def setup_ui(self):
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        group = QGroupBox("持倉比例（台股）")
+        group_layout = QVBoxLayout()
+
+        self.chart_view = QChartView()
+        self.chart_view.setRenderHint(QPainter.Antialiasing)
+        self.chart_view.setStyleSheet("background: transparent;")
+
+        group_layout.addWidget(self.chart_view)
+        group.setLayout(group_layout)
+        layout.addWidget(group)
+
+    def update_data(self, pie_data):
+        """
+        更新圓餅圖
+        Args:
+            pie_data: List[Tuple[label, value]]，僅包含台股部位
+        """
+        series = QPieSeries()
+        for label, value in pie_data:
+            if value > 0:
+                series.append(label, value)
+
+        chart = QChart()
+        chart.addSeries(series)
+        chart.setAnimationOptions(QChart.SeriesAnimations)
+        chart.setBackgroundVisible(False)
+        chart.legend().setVisible(True)
+        chart.legend().setAlignment(Qt.AlignBottom)
+
+        self.chart_view.setChart(chart)

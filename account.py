@@ -14,6 +14,7 @@ class Account:
         Args:
             initial_cash: 初始資金（預設100萬）
         """
+        self.initial_cash = initial_cash
         self.cash = initial_cash
         self.holdings = {}  # {stock_code: shares}
         self.trade_history = []  # 交易記錄

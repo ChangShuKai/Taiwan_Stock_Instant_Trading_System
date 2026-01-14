@@ -1,4 +1,7 @@
 import sys
+import os
+import csv
+from datetime import datetime
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QMessageBox, QGroupBox, QLabel
 from PySide6.QtCore import QTimer, Qt
 
@@ -6,7 +9,8 @@ from stock_api import StockAPI
 from account import Account
 from ui_components import (
     StockSearchWidget, PriceDisplayWidget, TradingWidget,
-    AccountInfoWidget, HoldingsTableWidget, HistoryTableWidget
+    AccountInfoWidget, HoldingsTableWidget, HistoryTableWidget,
+    HoldingsPieChartWidget
 )
 from styles import MAIN_STYLESHEET
 
@@ -16,11 +20,12 @@ class TradingApp(QMainWindow):
     
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("投資先生 - 台股即時交易系統")
+        self.setWindowTitle("台股即時交易系統")
         self.setGeometry(100, 100, 1300, 850)
         
         # 資料初始化
         self.account = Account()
+        self.last_log_date = None  # 用於每日記錄
         self.current_stock_code = "2330"  # 預設台積電
         self.current_price_data = None
         
@@ -101,6 +106,10 @@ class TradingApp(QMainWindow):
         # 帳戶資訊
         self.account_widget = AccountInfoWidget()
         layout.addWidget(self.account_widget)
+
+        # 台股持倉比例圓餅圖
+        self.pie_widget = HoldingsPieChartWidget()
+        layout.addWidget(self.pie_widget)
         
         # 持倉列表
         holdings_group = QWidget()
@@ -205,6 +214,9 @@ class TradingApp(QMainWindow):
         
         total_asset = self.account.get_total_asset(stock_prices)
         self.account_widget.update_info(self.account.cash, total_asset)
+
+        # 每日紀錄一次總資產與盈虧
+        self.log_daily_performance(total_asset, stock_prices)
     
     def update_display(self):
         """更新所有顯示"""
@@ -215,7 +227,9 @@ class TradingApp(QMainWindow):
     def update_holdings_table(self):
         """更新持倉表格"""
         holdings_data = []
+        pie_data = []  # 台股持倉用於圓餅圖
         stock_prices = {}
+        total_value_tw = 0
         
         if self.current_stock_code and self.current_price_data:
             stock_prices[self.current_stock_code] = self.current_price_data['price']
@@ -234,13 +248,81 @@ class TradingApp(QMainWindow):
             
             stock_name = StockAPI.get_stock_name(stock_code)
             value = price * shares
-            holdings_data.append((f"{stock_name} ({stock_code})", shares, price, value))
+
+            # 股票資訊欄位：台股 / 美股 + （稍後補上比例文字）
+            is_tw = stock_code.isdigit()
+            market_label = "台股" if is_tw else "美股"
+
+            holdings_data.append(
+                (f"{stock_name} ({stock_code})", shares, price, value, market_label)
+            )
+
+            # 台股才納入圓餅圖
+            if is_tw:
+                total_value_tw += value
+                pie_data.append((f"{stock_name} ({stock_code})", value))
         
         self.holdings_table.update_data(holdings_data)
+
+        # 更新圓餅圖（只顯示台股部位）
+        if total_value_tw > 0 and pie_data:
+            self.pie_widget.update_data(pie_data)
     
     def update_history_table(self):
         """更新交易記錄表格"""
         self.history_table.update_data(self.account.trade_history)
+
+    # ===== 檔案紀錄功能 =====
+    def log_daily_performance(self, total_asset, stock_prices):
+        """
+        將每日的總資產與盈虧，以及當日持股明細寫入檔案
+        - portfolio_daily.csv：每日總覽（日期、現金、總資產、盈虧）
+        - holdings_daily.csv：每日持股明細（日期、股票、股數、市值）
+        """
+        today_str = datetime.now().strftime("%Y-%m-%d")
+        if self.last_log_date == today_str:
+            return  # 當天已經記錄過了
+
+        self.last_log_date = today_str
+
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # 1) 總資產每日概況
+        summary_path = os.path.join(base_dir, "portfolio_daily.csv")
+        file_exists = os.path.exists(summary_path)
+        pnl = total_asset - self.account.initial_cash
+
+        with open(summary_path, "a", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            if not file_exists:
+                writer.writerow(["date", "time", "cash", "total_asset", "pnl"])
+            writer.writerow([
+                today_str,
+                datetime.now().strftime("%H:%M:%S"),
+                f"{self.account.cash:.2f}",
+                f"{total_asset:.2f}",
+                f"{pnl:.2f}",
+            ])
+
+        # 2) 每日持股明細
+        holdings_path = os.path.join(base_dir, "holdings_daily.csv")
+        file_exists_holdings = os.path.exists(holdings_path)
+
+        with open(holdings_path, "a", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            if not file_exists_holdings:
+                writer.writerow(["date", "stock_code", "shares", "price", "value"])
+
+            for stock_code, shares in self.account.holdings.items():
+                price = stock_prices.get(stock_code, 0)
+                value = price * shares
+                writer.writerow([
+                    today_str,
+                    stock_code,
+                    shares,
+                    f"{price:.2f}",
+                    f"{value:.2f}",
+                ])
 
 
 # ===== 程式入口 =====

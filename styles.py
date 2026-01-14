@@ -3,7 +3,7 @@
 提供現代化的UI樣式
 """
 
-# 主樣式表（整體圓角卡片風格）
+# 主樣式表（整體圓角 + 玻璃感卡片風格）
 MAIN_STYLESHEET = """
     QMainWindow {
         background: qlineargradient(
@@ -14,27 +14,27 @@ MAIN_STYLESHEET = """
     }
     
     QWidget#centralWidget {
-        background-color: #ffffff;
+        background-color: rgba(255, 255, 255, 210);
         border-radius: 18px;
-        border: 1px solid #dee2e6;
+        border: 1px solid rgba(222, 226, 230, 180);
     }
     
     QGroupBox {
         font-weight: bold;
         font-size: 13px;
         color: #2c3e50;
-        border: 1px solid #dee2e6;
-        border-radius: 12px;
+        border: 1px solid rgba(222, 226, 230, 190);
+        border-radius: 16px;
         margin-top: 16px;
         padding-top: 18px;
-        background-color: #ffffff;
+        background-color: rgba(255, 255, 255, 210);
     }
     
     QGroupBox::title {
         subcontrol-origin: margin;
         left: 18px;
         padding: 0 10px;
-        background-color: #ffffff;
+        background-color: rgba(255, 255, 255, 230);
         color: #495057;
     }
     
