@@ -3,35 +3,44 @@
 提供現代化的UI樣式
 """
 
-# 主樣式表
+# 主樣式表（整體圓角卡片風格）
 MAIN_STYLESHEET = """
     QMainWindow {
-        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-            stop:0 #f8f9fa, stop:1 #e9ecef);
+        background: qlineargradient(
+            x1:0, y1:0, x2:0, y2:1,
+            stop:0 #f1f3f5,
+            stop:1 #dee2e6
+        );
+    }
+    
+    QWidget#centralWidget {
+        background-color: #ffffff;
+        border-radius: 18px;
+        border: 1px solid #dee2e6;
     }
     
     QGroupBox {
         font-weight: bold;
         font-size: 13px;
         color: #2c3e50;
-        border: 2px solid #dee2e6;
-        border-radius: 8px;
-        margin-top: 12px;
-        padding-top: 15px;
-        background-color: white;
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        margin-top: 16px;
+        padding-top: 18px;
+        background-color: #ffffff;
     }
     
     QGroupBox::title {
         subcontrol-origin: margin;
-        left: 15px;
-        padding: 0 8px;
-        background-color: white;
+        left: 18px;
+        padding: 0 10px;
+        background-color: #ffffff;
         color: #495057;
     }
     
     QPushButton {
         padding: 10px 20px;
-        border-radius: 6px;
+        border-radius: 10px;
         border: none;
         font-weight: bold;
         font-size: 13px;
@@ -49,7 +58,7 @@ MAIN_STYLESHEET = """
     
     QTableWidget {
         border: 1px solid #dee2e6;
-        border-radius: 6px;
+        border-radius: 10px;
         gridline-color: #e9ecef;
         background-color: white;
         selection-background-color: #e3f2fd;
@@ -72,7 +81,7 @@ MAIN_STYLESHEET = """
     QLineEdit, QSpinBox {
         padding: 8px;
         border: 2px solid #ced4da;
-        border-radius: 6px;
+        border-radius: 10px;
         background-color: white;
         font-size: 13px;
         selection-background-color: #e3f2fd;

@@ -33,7 +33,7 @@ class StockSearchWidget(QWidget):
         search_layout.addWidget(QLabel("股票代碼:"))
         
         self.stock_input = QLineEdit("2330")
-        self.stock_input.setPlaceholderText("輸入股票代碼（如：2330）")
+        self.stock_input.setPlaceholderText("台股：2330、2317 ；美股：AAPL、TSLA")
         self.stock_input.returnPressed.connect(self.on_search_callback)
         search_layout.addWidget(self.stock_input)
         
@@ -43,6 +43,15 @@ class StockSearchWidget(QWidget):
         search_layout.addWidget(search_btn)
         
         group_layout.addLayout(search_layout)
+
+        # 股票代碼說明
+        code_hint = QLabel(
+            "說明：台股使用數字代碼（例如：2330 台積電），"
+            "美股使用英文代碼（例如：AAPL、MSFT、TSLA）。"
+        )
+        code_hint.setStyleSheet("color: #868e96; font-size: 11px; padding-top: 6px;")
+        group_layout.addWidget(code_hint)
+
         group.setLayout(group_layout)
         layout.addWidget(group)
     

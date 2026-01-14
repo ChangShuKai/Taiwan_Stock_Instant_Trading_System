@@ -1,6 +1,6 @@
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QMessageBox, QGroupBox
-from PySide6.QtCore import QTimer
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QMessageBox, QGroupBox, QLabel
+from PySide6.QtCore import QTimer, Qt
 
 from stock_api import StockAPI
 from account import Account
@@ -37,18 +37,37 @@ class TradingApp(QMainWindow):
     def setup_ui(self):
         """設置UI界面"""
         central_widget = QWidget()
+        central_widget.setObjectName("centralWidget")
         self.setCentralWidget(central_widget)
-        main_layout = QHBoxLayout(central_widget)
+
+        # 外層：垂直排列（主內容 + 底部版權列）
+        outer_layout = QVBoxLayout(central_widget)
+        outer_layout.setSpacing(8)
+        outer_layout.setContentsMargins(18, 18, 18, 18)
+
+        # 主內容：左右分欄
+        main_layout = QHBoxLayout()
         main_layout.setSpacing(15)
-        main_layout.setContentsMargins(15, 15, 15, 15)
-        
+
         # 左側面板：股票資訊和交易
         left_panel = self.create_left_panel()
         main_layout.addWidget(left_panel, 2)
-        
+
         # 右側面板：帳戶、持倉和記錄
         right_panel = self.create_right_panel()
         main_layout.addWidget(right_panel, 1)
+
+        outer_layout.addLayout(main_layout)
+
+        # 底部版權文字
+        footer_label = QLabel(
+            "Copyright © 2025 Six Star Cultur. All rights reserved."
+        )
+        footer_label.setStyleSheet(
+            "color: #adb5bd; font-size: 11px; padding-top: 4px;"
+        )
+        footer_label.setAlignment(Qt.AlignCenter)
+        outer_layout.addWidget(footer_label)
     
     def create_left_panel(self):
         """創建左側面板"""
