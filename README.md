@@ -107,7 +107,7 @@ PySide6/
 
 ## 技術架構
 
-- **GUI 框架**：PySide6 (Qt for Python)
+- **GUI 框架**：PyS ide6 (Qt for Python)
 - **HTTP 請求**：requests
 - **資料來源**：台灣證券交易所公開 API
 - **設計模式**：模組化設計、組件化 UI
@@ -115,3 +115,8 @@ PySide6/
 ## 授權
 
 本專案僅供學習和個人使用。
+
+##版權
+
+© Chang_Shukai 2026. All rights reserved.
+© Six Star Culture 2026. All rights reserved.
