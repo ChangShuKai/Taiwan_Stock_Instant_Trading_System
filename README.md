@@ -118,5 +118,5 @@ PySide6/
 
 ##版權
 
-© Chang_Shukai 2026. All rights reserved.
-© Six Star Culture 2026. All rights reserved.
+- © Chang_Shukai 2026. All rights reserved.
+- © Six Star Culture 2026. All rights reserved.
