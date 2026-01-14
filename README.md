@@ -18,11 +18,11 @@
 
 ```
 PySide6/
-├── main.py              # 主程式入口（236行）
-├── stock_api.py         # 股票 API 模組（145行）
-├── account.py           # 帳戶系統模組（94行）
-├── ui_components.py     # UI 組件模組（299行）
-├── styles.py            # 樣式定義模組（173行）
+├── main.py              # 主程式入口
+├── stock_api.py         # 股票 API 模組
+├── account.py           # 帳戶系統模組
+├── ui_components.py     # UI 組件模組
+├── styles.py            # 樣式定義模組
 └── requirements.txt     # 依賴套件清單
 ```
 
