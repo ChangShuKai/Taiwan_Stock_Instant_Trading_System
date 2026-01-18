@@ -170,3 +170,7 @@ PySide6/
 
 - © Chang_Shukai 2026. All rights reserved.
 - © Six Star Culture 2026. All rights reserved.
+
+### 最後更新時間
+
+2026/01/18
