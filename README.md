@@ -165,6 +165,7 @@ PySide6/
 ## 版權
 
 `© Chang_Shukai 2026. All rights reserved.`
+
 `© Six Star Culture 2026. All rights reserved.`
 
 ### 最後更新時間
